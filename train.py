@@ -5,13 +5,13 @@ from models import build_model, load_model
 
 from keras.callbacks import ModelCheckpoint
 
-from keras_diagram import ascii
+# from keras_diagram import ascii
 from keras.optimizers import Adam
 
 def train(add, num_testing, object_dim, job_name, **kwargs):
 
-	coco_train = COCO('.../annotations/instances_train2014.json')
-	coco_test = COCO('.../annotations/instances_val2014.json')
+	coco_train = COCO('../annotations/instances_train2014.json')
+	coco_test = COCO('../annotations/instances_val2014.json')
 
 	training_generator = create_generator(coco = coco_train, mode = 'training', add = add, object_dim = object_dim, **kwargs)
 	testing_generator = create_generator(coco = coco_test, mode = 'testing', add = add, object_dim = object_dim, **kwargs)
@@ -22,7 +22,7 @@ def train(add, num_testing, object_dim, job_name, **kwargs):
 
 	callbacks_list = [ModelCheckpoint('../model_weights/'+job_name+'.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min')]
 
-	print model.summary()
+	print(model.summary())
 
 	history = model.fit_generator(
 		training_generator, \

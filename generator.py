@@ -2,7 +2,7 @@ import numpy as np
 import scipy.misc as misc
 import scipy.ndimage as ndimage
 from pycocotools.coco import COCO
-from gen_utils import load_image, apply_mask, fit_in_square, prepare_input, prepare_mask
+from gen_utils import load_image, apply_mask, fit_in_square, prepare_input # , prepare_mask
 
 def create_generator(coco, mode, add, object_dim, **kwargs):
 
