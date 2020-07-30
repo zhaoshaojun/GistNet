@@ -7,8 +7,13 @@ import numpy as np
 # from resnet50 import ResNet50
 
 from keras import backend as K
-# K.common.image_dim_ordering('th')
+# K.image_dim_ordering('th')
+# K.common.image_dim_ordering()
+import keras
 
+keras.backend.set_image_data_format('channels_first')
+
+print(keras.backend.image_data_format())
 
 def ObjectNet(object_dim):
 
