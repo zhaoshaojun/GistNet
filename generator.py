@@ -26,8 +26,12 @@ def create_generator(coco, mode, add, object_dim, **kwargs):
 
 		while True:
 
-			if progress % 10000 == 0:                        
+			if progress % 10_000 == 0:                        
 				print(datetime.now(), 'working on step:', progress)
+
+			if progress == 30_000:
+                                pass # return
+			                        
 			progress += 1
         
 			cat_id_index = np.random.choice(range(0,80))
