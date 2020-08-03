@@ -1,20 +1,27 @@
 import numpy as np
 from pycocotools.coco import COCO
 from PIL import Image
-import scipy.misc as misc
+from matplotlib.pyplot import imread
+# import scipy.misc as misc
 import os.path
 
 
 def load_image(image_id, mode):
 
-	if mode == 'training':
-		loaded_image = misc.imread('./train2014/COCO_train2014_'+str((image_id)).zfill(12)+'.jpg', mode = 'RGB')
+	try:
+		if mode == 'training':
+			# loaded_image = imread('./train2014/COCO_train2014_'+str((image_id)).zfill(12)+'.jpg'), mode = 'RGB')
+			loaded_image = imread('./train2014/COCO_train2014_'+str((image_id)).zfill(12)+'.jpg')
 
-	elif mode == 'testing':
-		loaded_image = misc.imread('./val2014/COCO_val2014_'+str((image_id)).zfill(12)+'.jpg', mode = 'RGB')
+		elif mode == 'testing':
+			# loaded_image = imread('./val2014/COCO_val2014_'+str((image_id)).zfill(12)+'.jpg', mode = 'RGB')
+			loaded_image = imread('./val2014/COCO_val2014_'+str((image_id)).zfill(12)+'.jpg')
 
-	else:
-		raise ValueError('MS COCO Image Id {} Not Found'.format(image_id))
+		else:
+			raise ValueError('MS COCO Image Id {} Not Found'.format(image_id))
+	except:
+		print('cannot read image')
+		# exit(-1)
 		
 	return loaded_image
 
@@ -60,17 +67,23 @@ def fit_in_square(im, img_dim):
 		img_dim: (height, width, channels)
 	'''
 	try:
-		im = Image.fromarray(im, 'RGB')
+		im2 = Image.fromarray(im, 'RGB')
 	except:
 		print(np.shape(im))
 		raise ValueError('Cant turn into Image')
-	im.thumbnail((img_dim, img_dim, 3), resample = Image.BILINEAR)
-	im = np.array(im)
-	im = np.rollaxis(im, 2, 0)
-	frame = np.zeros((3, img_dim, img_dim))
-	p,m,n = np.shape(im)
+	im2.thumbnail((img_dim, img_dim), resample = Image.BILINEAR)
+	# im3 = np.transpose(im, (2, 1, 0))
+
+	im3 = np.array(im2)
+	# im3 = np.rollaxis(im3, 2, 0)
+	frame = np.zeros((img_dim, img_dim, 3))
+	m,n,p = np.shape(im3)
 	d = img_dim
-	frame[:,d/2-m/2:d/2+m/2+m%2, d/2-n/2:d/2+n/2+n%2] = im
+	try:
+		frame[d//2-m//2:d//2+m//2+m%2, d//2-n//2:d//2+n//2+n%2, :] = im3
+	except Except as e:
+		print('error', e)
+		# pass
 
 	return frame
 
@@ -86,4 +99,5 @@ def prepare_input(input_img):
 
 	output_img[0:4,:] = output_img[0:4,:] - 127.5
 
+	# output_img_t = np.transpose(output_img, (0, 2,3,1))
 	return output_img

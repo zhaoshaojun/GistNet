@@ -11,40 +11,42 @@ from keras import backend as K
 # K.common.image_dim_ordering()
 import keras
 
-keras.backend.set_image_data_format('channels_first')
+# keras.backend.set_image_data_format('channels_first')
+keras.backend.set_image_data_format('channels_last')
 
 print(keras.backend.image_data_format())
 
 def ObjectNet(object_dim):
 
-	object_input = Input(shape = (3, object_dim, object_dim), name = 'object_input')
 
-	x = Conv2D(64, 3, activation='relu', padding = 'same')(object_input)
-	x = Conv2D(64, 3, activation='relu', padding = 'same')(x)
-	x = MaxPooling2D(pool_size = 2)(x)
+	object_input = Input(shape = (object_dim, object_dim, 3), name = 'object_input')
+
+	x = Conv2D(64, 3, activation='relu', padding = 'same', data_format='channels_last')(object_input)
+	x = Conv2D(64, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = MaxPooling2D(pool_size = 2, data_format='channels_last')(x)
 
 	# Block 2
-	x = Conv2D(128, 3, activation='relu', padding = 'same')(x)
-	x = Conv2D(128, 3, activation='relu', padding = 'same')(x)
-	x = MaxPooling2D(pool_size = 2)(x)
+	x = Conv2D(128, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = Conv2D(128, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = MaxPooling2D(pool_size = 2, data_format='channels_last')(x)
 
 	# Block 3
-	x = Conv2D(256, 3, activation='relu', padding = 'same')(x)
-	x = Conv2D(256, 3, activation='relu', padding = 'same')(x)
-	x = Conv2D(256, 3, activation='relu', padding = 'same')(x)
-	x = MaxPooling2D(pool_size = 2)(x)
+	x = Conv2D(256, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = Conv2D(256, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = Conv2D(256, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = MaxPooling2D(pool_size = 2, data_format='channels_last')(x)
 
 	# Block 4
-	x = Conv2D(512, 3, activation='relu', padding = 'same')(x)
-	x = Conv2D(512, 3, activation='relu', padding = 'same')(x)
-	x = Conv2D(512, 3, activation='relu', padding = 'same',)(x)
-	x = MaxPooling2D(pool_size = 2)(x)
+	x = Conv2D(512, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = Conv2D(512, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = Conv2D(512, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = MaxPooling2D(pool_size = 2, data_format='channels_last')(x)
 
 	# Block 5
-	x = Conv2D(512, 3, activation='relu', padding = 'same')(x)
-	x = Conv2D(512, 3, activation='relu', padding = 'same')(x)
-	x = Conv2D(512, 3, activation='relu', padding = 'same')(x)
-	x = MaxPooling2D(pool_size = 2)(x)
+	x = Conv2D(512, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = Conv2D(512, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = Conv2D(512, 3, activation='relu', padding = 'same', data_format='channels_last')(x)
+	x = MaxPooling2D(pool_size = 2, data_format='channels_last')(x)
 
 	x = Flatten()(x)
 	x = Dense(4096, activation = 'relu')(x)
@@ -58,15 +60,15 @@ def ObjectNet(object_dim):
 def AddGist(objectnet, context_dim):
 
 	k = 5
-	context_input = Input(shape = (3, context_dim, context_dim), name = 'context_input')
-	x = Conv2D(64, k, activation='relu', strides = 2, padding='valid')(context_input)
-	x = Conv2D(64, k, activation='relu', strides = 2, padding='valid')(x)
-	x = Conv2D(128, k, activation='relu', strides = 2, padding='valid')(x)
-	x = Conv2D(128, k, activation='relu', strides = 2, padding='valid')(x)
-	x = Conv2D(256, k, activation='relu', strides = 2, padding='valid')(x)
-	x = Conv2D(256, 3, activation='relu', strides = 2, padding='valid')(x)
-	x = Conv2D(512, 3, activation='relu', padding='valid')(x)
-	x = Conv2D(512, 3, activation='relu', padding='valid')(x)
+	context_input = Input(shape = (context_dim, context_dim, 3), name = 'context_input')
+	x = Conv2D(64, k, activation='relu', strides = 2, padding='valid', data_format='channels_last')(context_input)
+	x = Conv2D(64, k, activation='relu', strides = 2, padding='valid', data_format='channels_last')(x)
+	x = Conv2D(128, k, activation='relu', strides = 2, padding='valid', data_format='channels_last')(x)
+	x = Conv2D(128, k, activation='relu', strides = 2, padding='valid', data_format='channels_last')(x)
+	x = Conv2D(256, k, activation='relu', strides = 2, padding='valid', data_format='channels_last')(x)
+	x = Conv2D(256, 3, activation='relu', strides = 2, padding='valid', data_format='channels_last')(x)
+	x = Conv2D(512, 3, activation='relu', padding='valid', data_format='channels_last')(x)
+	x = Conv2D(512, 3, activation='relu', padding='valid', data_format='channels_last')(x)
 
 	x = Flatten(name = 'gist_vector')(x)
 	x = Concatenate()([x, objectnet.get_layer('object_vector').output])

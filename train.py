@@ -20,20 +20,22 @@ def train(add, num_testing, object_dim, job_name, **kwargs):
 
 	model.compile(loss = 'categorical_crossentropy', optimizer = Adam(1e-6, beta_1=.9, beta_2=.99), metrics = ['accuracy'])
 
-	callbacks_list = [ModelCheckpoint('./'+job_name+'.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min')]
+	# callbacks_list = [ModelCheckpoint('./'+job_name+'.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min')]
+
+	callbacks_list = [ModelCheckpoint('./'+job_name+'.h5', monitor='val_loss', verbose=1, mode='min')]
 
 	print(model.summary())
 
 	history = model.fit_generator(
 		training_generator, \
 		validation_steps = num_testing, \
-		validation_data = testing_generator, \
-		steps_per_epoch = 2, # 5, # 5000, \
-		epochs = 2, # 500, \
-		callbacks = callbacks_list,\
+		validation_data = training_generator, \
+		steps_per_epoch = 100, # 5000, \
+		epochs = 5, # 500, \
+		# callbacks = callbacks_list,\
 		verbose=1, \
-		max_queue_size = 1, # 10, \
-		workers = 2, \
+		max_queue_size = 2, # 10, \
+		workers = 1, \
 		)
 
 if __name__ == '__main__':
@@ -41,7 +43,7 @@ if __name__ == '__main__':
 	add = None
 	add = 'gist'
 
-	num_testing = 2 # 10 # 1000
+	num_testing = 100 # 1000
 
 	object_dim = 224
 

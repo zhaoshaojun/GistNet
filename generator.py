@@ -50,8 +50,13 @@ def create_generator(coco, mode, add, object_dim, **kwargs):
 				object_im = fit_in_square(apply_mask(coco, raw_image = load_image(image_id, mode), mask = object_mask, keep = 'object', crop = 0), object_dim)
 
 				object_input = prepare_input(object_im)
+				# object_input_t = np.transpose(object_input, (0, 2,3,1))
 
-			except: continue
+
+			except: 
+				# print('error')
+				# exit(-1)
+				continue
 
 			if add != None:
 				
@@ -62,8 +67,11 @@ def create_generator(coco, mode, add, object_dim, **kwargs):
 					context_image = fit_in_square(apply_mask(coco, raw_image = load_image(image_id, mode), mask = object_mask, keep = 'context', crop = 0), kwargs['context_dim'])
 
 					context_input = prepare_input(context_image)
-
-				except: continue
+					# context_input_t = np.transpose(context_input, (0, 2,3,1))
+				except: 
+					# print('error')
+					# exit(-1)
+					continue
 
 				yield({'object_input': object_input, 'context_input': context_input}, {'gistnet_output': np.array([gt_vector])})
 
