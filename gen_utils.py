@@ -8,10 +8,10 @@ import os.path
 def load_image(image_id, mode):
 
 	if mode == 'training':
-		loaded_image = misc.imread('../cocodata/train2014/COCO_train2014_'+str((image_id)).zfill(12)+'.jpg', mode = 'RGB')
+		loaded_image = misc.imread('./train2014/COCO_train2014_'+str((image_id)).zfill(12)+'.jpg', mode = 'RGB')
 
 	elif mode == 'testing':
-		loaded_image = misc.imread('../cocodata/val2014/COCO_val2014_'+str((image_id)).zfill(12)+'.jpg', mode = 'RGB')
+		loaded_image = misc.imread('./val2014/COCO_val2014_'+str((image_id)).zfill(12)+'.jpg', mode = 'RGB')
 
 	else:
 		raise ValueError('MS COCO Image Id {} Not Found'.format(image_id))
